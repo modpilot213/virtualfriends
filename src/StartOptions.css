@@ -1,0 +1,29 @@
+/* Container for the entire component */
+.app-container {
+    text-align: center;
+    min-height: 100vh;  /* ensures the container fills the whole vertical height */
+    background-color: 3498db;  /* assuming you're using a blue background */
+    color: white;  /* assuming text will be white */
+  }
+  
+  /* Title styling */
+  h1 {
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  /* Button styling */
+  button {
+    margin: 20px;
+    padding: 15px 30px;
+    border: none;
+    background-color: lightgray;  /* background color of buttons */
+    color: black;  /* text color on buttons */
+    cursor: pointer;  /* changes cursor to hand when hovering */
+  }
+  
+  /* Button on hover */
+  button:hover {
+    background-color: darkgray;
+  }
+  

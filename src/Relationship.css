@@ -1,0 +1,17 @@
+.relationship-container {
+    text-align: center;
+    min-height: 100vh;
+    /* Add more styles as needed */
+  }
+  
+  .next-step-button, .go-back-button {
+    margin: 10px;  /* changed from margin: 10px auto; */
+    /* Other styles remain the same */
+  }
+  
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }

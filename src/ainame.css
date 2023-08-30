@@ -1,0 +1,38 @@
+/* Container for the entire component */
+.aicustomization-container {
+    text-align: center;
+    min-height: 100vh;
+    background-color: 3498db; /* Change to the background color you're using */
+    color: white; /* Assuming text is white */
+  }
+  
+  /* Title styling */
+  h2 {
+    font-weight: bold;
+  }
+  
+  /* Input field styling */
+  .virtualfriend-name-input {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    background-color: white;
+    color: black;
+  }
+  
+  /* General button styling */
+  button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: lightgray;
+    cursor: pointer;
+  }
+  
+  /* Button when hovered */
+  button:hover {
+    background-color: darkgray;
+  }
+  
+  /* Add more styles as needed */
+  

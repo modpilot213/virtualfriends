@@ -1,0 +1,35 @@
+.backstory-container {
+    text-align: center;
+    min-height: 100vh;
+    /* Add more styles as needed */
+  }
+  
+  .backstory-textarea {
+    display: block;
+    width: 80%;
+    height: 100px;
+    margin: 10px auto;
+    padding: 5px;
+    /* Add more styles as needed */
+  }
+  
+  .next-step-button, .go-back-button {
+    margin: 10px;  /* changed from margin: 10px auto; */
+    /* Other styles remain the same */
+  }
+  
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .backstory-guidelines {
+    text-align: left;
+    width: 80%;
+    margin: 0 auto;
+    font-size: smaller;
+    padding-left: 10px;
+    color: azure;
+  }
