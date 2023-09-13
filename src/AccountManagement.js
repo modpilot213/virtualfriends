@@ -10,9 +10,9 @@ function AccountManagement() {
       <div className="form-container">
         <h1>Welcome to Your Account</h1>
         <div className="form-content">
-          <button onClick={() => navigate('/manage-friends')}>Manage Friends</button>
-          <button onClick={() => navigate('/user-settings')}>User Settings</button>
-          <button onClick={() => navigate('/create-new-friend')}>Create New Friend</button>
+          <button onClick={() => navigate('/managefriends')}>Manage Friends</button>
+          <button onClick={() => navigate('/settings')}>User Settings</button>
+          <button onClick={() => navigate('/customize')}>Create New Friend</button>
           <button onClick={() => {
             // TODO: Handle logout
             navigate('/login'); // Redirecting to login for now

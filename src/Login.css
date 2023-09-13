@@ -11,6 +11,10 @@
 
 /* Container for the form elements */
 .form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
@@ -50,4 +54,11 @@ button {
 /* Button on hover */
 button:hover {
   background-color: darkgray;
+}
+
+/* Button Wrapper */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }

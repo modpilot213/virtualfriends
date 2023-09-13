@@ -12,6 +12,10 @@ import Backstory from './Backstory';
 import Summary from './Summary';
 import AccountManagement from './AccountManagement';
 import Login from './Login';
+import ManageFriends from './ManageFriends';
+import Friend from './Friend';
+import UserSettings from './UserSettings';
+import firebase from './Firebase';
 
 
 function App() {
@@ -37,6 +41,9 @@ function App() {
                      <Route path="/summary" element={<Summary />} />
                      <Route path="/account" element={<AccountManagement />} />
                      <Route path="/login" element={<Login />} />
+                     <Route path="/managefriends" element={<ManageFriends />} />
+                     <Route path="/friend" element={<Friend />} />
+                     <Route path="/settings" element={<UserSettings />} />
                 </Routes>
             </div>
         </Router>

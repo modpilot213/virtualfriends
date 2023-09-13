@@ -1,0 +1,49 @@
+/* Container for the entire component */
+.friend-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: #3498db; 
+    color: white;
+  }
+  
+  /* Inner container for the form */
+  .form-container {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  /* Title styling */
+  h1 {
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Content inside the form */
+  .form-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 20px;
+  }
+  
+  /* Button styling */
+  button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    border: none;
+    background-color: lightgray;
+    color: black;
+    cursor: pointer;
+  }
+  
+  /* Button on hover */
+  button:hover {
+    background-color: darkgray;
+  }
+  
