@@ -1,19 +1,40 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Backstory.css';
+import { getAuth } from "firebase/auth";
+import { doc, setDoc, getFirestore } from "firebase/firestore";
 
 function Backstory() {
   const [backstory, setBackstory] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const db = getFirestore();
+  const auth = getAuth();
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (!location.state || !location.state.virtualFriendId) {
+      alert("Invalid access. Redirecting to start.");
+      navigate("/start");
+    }
+  }, [location, navigate]);
+
+  const handleSubmit = async () => {
     if (backstory.trim() === '') {
       alert('Please provide a backstory for your virtual friend.');
       return;
     }
-    // Navigate to the next step or handle the backstory as needed
-    console.log('Backstory:', backstory);
-    navigate('/summary'); // Replace with the correct route path
+
+    const virtualFriendId = location.state.virtualFriendId;
+    const virtualFriendRef = doc(db, 'users', auth.currentUser.uid, 'virtualFriends', virtualFriendId);
+
+    try {
+      await setDoc(virtualFriendRef, {
+        backstory: backstory.trim()
+      }, { merge: true });
+      navigate('/summary', { state: { virtualFriendId } });
+    } catch (error) {
+      console.error("Error updating backstory: ", error);
+    }
   };
 
   return (
@@ -31,9 +52,9 @@ function Backstory() {
         placeholder="Enter the backstory here..."
       />
       <div className="buttons-container">
-      <button onClick={handleSubmit} className="next-step-button">Next Step</button>
-      <button onClick={() => navigate('/interests')} className="go-back-button">Go Back</button> {/* Replace with the correct route path */}
-    </div>
+        <button onClick={handleSubmit} className="next-step-button">Next Step</button>
+        <button onClick={() => navigate('/interests')} className="go-back-button">Go Back</button>
+      </div>
     </div>
   );
 }

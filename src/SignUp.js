@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import firebase from './Firebase';
-import 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, collection } from 'firebase/firestore';
+import { db } from './Firebase'; 
 
 function SignUp() {
     const [email, setEmail] = useState('');
@@ -9,33 +10,28 @@ function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const navigate = useNavigate();
+    const auth = getAuth(); 
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Check if passwords match
         if (password !== confirmPassword) {
             alert('Passwords do not match.');
             return;
         }
 
         try {
-            // Create new user using Firebase Auth
-            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Create a Firestore document for the new user
-            await firebase.firestore().collection('users').doc(user.uid).set({
+            await setDoc(doc(collection(db, 'users'), user.uid), {
                 email: user.email,
-                // You can add more user fields here
+                // Add more fields here if you want
             });
 
             console.log('User account and Firestore document created.');
-
-            // Navigate to the next page
             navigate('/start');
         } catch (error) {
-            // Handle errors
             alert(error.message);
         }
     };

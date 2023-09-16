@@ -1,27 +1,50 @@
 .summary-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 50px;
-    min-height: 100vh;
-  }
-  
-  .summary-item {
-    margin: 15px;
-    font-size: 18px;
-  }
-  
-  .summary-button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .go-back-button,
-  .finalize-settings-button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  min-height: 100vh;
+}
+
+.summary-item {
+  margin: 15px;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.summary-label,
+.summary-value {
+  display: inline; /* This allows them to be on the same line */
+}
+
+.summary-inner-container {
+  display: flex; /* Encloses summary-label and summary-value */
+}
+
+.edit-button {
+  margin-top: 5px;
+  align-self: center; /* This centers the button horizontally */
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.summary-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.go-back-button,
+.finalize-settings-button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}

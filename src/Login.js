@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';  // Importing the CSS
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // New import for Firebase modular API
+import './Login.css'; // Importing the CSS
+import { auth } from './Firebase'; // Make sure to import the auth object
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const navigate = useNavigate();  // To navigate between routes
+  const navigate = useNavigate(); // To navigate between routes
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: Implement the actual login logic
-    console.log('Email:', email);
-    console.log('Password:', password);
-    
-    // Navigate to the AccountManagement page after login
-    navigate('/account');
+    try {
+      // Sign in the user
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      console.log('User signed in:', user);
+
+      // Navigate to the AccountManagement page after successful login
+      navigate('/account');
+    } catch (error) {
+      // Handle errors here
+      alert(error.message);
+    }
   };
 
   return (

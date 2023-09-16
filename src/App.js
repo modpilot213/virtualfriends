@@ -15,8 +15,7 @@ import Login from './Login';
 import ManageFriends from './ManageFriends';
 import Friend from './Friend';
 import UserSettings from './UserSettings';
-import firebase from './Firebase';
-
+import { app, auth } from './Firebase';
 
 function App() {
     return (
