@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Summary.css';
 import { getAuth } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 
 function Summary() {
   const [virtualFriendData, setVirtualFriendData] = useState({});
@@ -36,9 +36,19 @@ function Summary() {
     fetchVirtualFriendData();
   }, [db, auth, navigate, location]);
 
-  const finalizeSettings = () => {
-    alert('Settings finalized!');
-    navigate('/finalPage', { state: { virtualFriendId: location.state.virtualFriendId } });
+  const finalizeSettings = async () => {
+    const virtualFriendId = location.state.virtualFriendId;
+    const virtualFriendRef = doc(db, 'users', auth.currentUser.uid, 'virtualFriends', virtualFriendId);
+
+    try {
+      await setDoc(virtualFriendRef, {
+        isFinalized: true
+      }, { merge: true });
+      alert('Settings finalized!');
+      navigate('/final', { state: { virtualFriendId: location.state.virtualFriendId } }); // Updated here
+    } catch (error) {
+      console.error("Error finalizing settings: ", error);
+    }
   };
 
   const navigateToEdit = (page) => {

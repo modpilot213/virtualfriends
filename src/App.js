@@ -16,6 +16,7 @@ import ManageFriends from './ManageFriends';
 import Friend from './Friend';
 import UserSettings from './UserSettings';
 import { app, auth } from './Firebase';
+import FinalPage from './FinalPage';
 
 function App() {
     return (
@@ -43,6 +44,8 @@ function App() {
                      <Route path="/managefriends" element={<ManageFriends />} />
                      <Route path="/friend" element={<Friend />} />
                      <Route path="/settings" element={<UserSettings />} />
+                     <Route path="/friend/:friendId" element={<Friend />} />
+                     <Route path="/final" element={<FinalPage />} />
                 </Routes>
             </div>
         </Router>

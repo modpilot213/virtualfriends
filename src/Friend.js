@@ -1,33 +1,43 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Friend.css'; 
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 
 function Friend() {
+  const [friendData, setFriendData] = useState({});
+  const { friendId } = useParams(); // This assumes your URL will be something like "/friend/:friendId"
   const navigate = useNavigate();
+  const auth = getAuth();
+  const db = getFirestore();
 
-  // Dummy data for demonstration purposes
-  const friendData = {
-    name: "John",
-    relationship: "Best Friend",
-    personalityTraits: ["Funny", "Loyal"],
-    interestsAndHobbies: ["Gaming", "Reading"],
-    customBackground: "Grew up together in the same neighborhood."
-  };
+  useEffect(() => {
+    const fetchFriendData = async () => {
+      const friendRef = doc(db, 'users', auth.currentUser.uid, 'virtualFriends', friendId);
+      const docSnap = await getDoc(friendRef);
+
+      if (docSnap.exists()) {
+        setFriendData(docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
+    };
+
+    fetchFriendData();
+  }, [db, auth, friendId]);
 
   return (
-    <div className="friend-container">
-      <div className="form-container">
-        <h1>{friendData.name}</h1>
-        <div className="form-content">
-          <div><strong>Relationship:</strong> {friendData.relationship}</div>
-          <div><strong>Personality Traits:</strong> {friendData.personalityTraits.join(', ')}</div>
-          <div><strong>Interests & Hobbies:</strong> {friendData.interestsAndHobbies.join(', ')}</div>
-          <div><strong>Custom Background:</strong> {friendData.customBackground}</div>
-        </div>
-      </div>
-      <button onClick={() => navigate('/manage-friends')}>Go Back</button>
+    <div className="friend-summary-container">
+      <h1>Friend Summary</h1>
+      <p><strong>Name:</strong> {friendData.name}</p>
+      <p><strong>Relationship:</strong> {friendData.relationship}</p>
+      <p><strong>Personality Traits:</strong> {friendData.traits?.join(', ')}</p>
+      <p><strong>Interests:</strong> {friendData.interests?.join(', ')}</p>
+      <p><strong>Backstory:</strong> {friendData.backstory}</p>
+      <p><strong>Status:</strong> {friendData.isActive ? 'Active' : 'Inactive'}</p>
+      <button onClick={() => navigate('/managefriends')}>Back to Manage Friends</button>
     </div>
   );
 }
 
 export default Friend;
+
