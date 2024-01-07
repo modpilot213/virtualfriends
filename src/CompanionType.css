@@ -1,0 +1,62 @@
+.companion-type-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    min-height: 100vh;
+    width: 80%; /* Adjusted width for better alignment */
+    margin: 50px auto; /* Center the container */
+  }
+  
+  .companion-type-item {
+    margin: 15px;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%; /* Ensure full width */
+  }
+  
+  .companion-type-label {
+    display: block; /* Ensures label takes its own line */
+    margin-bottom: 5px; /* Space between label and input box */
+  }
+  
+  .companion-type-list {
+    list-style: none; /* Removes bullet points from the list */
+    padding: 0; /* Removes padding from the list */
+  }
+  
+  .companion-type-list li {
+    margin-bottom: 10px; /* Space between list items */
+  }
+  
+  .companion-type-list input[type="radio"] {
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  
+  .companion-type-list label {
+    vertical-align: middle;
+  }
+  
+  .custom-type-input {
+    margin-top: 20px; /* Space from the last radio button to the custom input */
+    font-size: 16px; /* Larger font size for visibility */
+    padding: 5px; /* Padding for the input box */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Full width of its parent */
+  }
+  
+  .next-step-button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    align-self: center; /* This centers the button horizontally */
+  }
+  

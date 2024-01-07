@@ -1,3 +1,13 @@
+
+body {
+  background-color: #ffffff; /* Replace #desiredColor with your chosen color code */
+}
+
+.hover-button:hover {
+  background-color: #ff7f50ff; /* Your desired hover color */
+  color: white; /* Text color on hover */
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -5,36 +15,13 @@
   justify-content: center;
   height: auto;
   background-color: #3498db;
+  padding: 20px;
 }
 
-h1 {
-  font-size: 4.5rem;
-  color: white;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
+/* Material UI handles most of the styling for buttons, typography, and containers */
 
-h2 {
-  color: white;
-  font-weight: bold;
-}
-
-button {
-  margin: 25px 0; /* Increased spacing */
-  padding: 10px 25px; /* Adjusted for equal size */
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  background-color: white;
-  color: #3498db;
-  width: 150px; /* Equal width for both buttons */
-}
-
-button:hover {
-  background-color: #ecf0f1;
-}
+/* Specific styles for custom components */
+/* Add or adjust these styles based on your specific needs and Material UI integration */
 
 .sign-up-container {
   display: flex;
@@ -45,184 +32,21 @@ button:hover {
   width: 100%;
 }
 
-.sign-up-container h2 {
-  color: white;
-  margin-bottom: 20px;
-  font-size: 2rem;
-}
-
 .sign-up-container form {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.sign-up-container input {
-  margin: 15px 0; /* Adjusted spacing */
-  padding: 10px;
-  width: 104%; /* Increased width for inputs */
-  max-width: 350px; /* Adjusted for the increased width */
-  border: 2px solid white; /* Increased border thickness */
-  background-color: transparent;
-  color: white;
-}
-
-.sign-up-container input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.tutorial-title {
-  text-align: center;
-  font-size: 2.5rem; /* Adjust this value as you see fit for the desired size */
-  margin-top: 20px;
-  margin-bottom: 40px;
-}
-
-.tutorial-container {
-    color: white;
-    text-align: left;
-    padding: 200px;
-}
-
-.tutorial-button {
-  display: block;
-  margin: 10px auto;  /* auto horizontally centers the block-level element and 10px gives space between the buttons */
-  padding: 10px 20px; /* Adjust the padding to control the button size */
-}
-
-.tutorial-button:first-of-type {
-  margin-top: 60px;
-}
-
-.aicustomization-container {
-  text-align: center;
-  padding: 50px 0;
-}
-
-.virtualfriend-name-input {
-  width: 80%;
-  padding: 10px;
-  margin: 20px auto;
-  display: block;
-  font-size: 16px;
-}
-
-.aicustomization-container button {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
-}
-
-.relationship-container {
+.personality-traits-container, .interests-container, .relationship-container {
   text-align: center;
 }
 
-.relationship-button {
-  display: block;
-  width: 200px;
-  margin: 10px auto;
-}
-
-.relationship-button.selected {
-  background-color: #007bff; /* Selected button color */
-  color: white; /* Text color for the selected button */
-}
-
-.next-step-button {
-  display: block;
-  margin: 20px auto;
-  width: 200px;
-  background-color: #4CAF50; /* Green color for the Next Step button */
-  color: white; /* Text color for the Next Step button */
-  margin-top: 50px;
-}
-
-.go-back-button {
-  display: block;
-  margin: 20px auto;
-  width: 200px;
-  background-color: #FFEB3B; /* Yellow color for the Go Back button */
-}
-
-.personality-traits-container {
-  text-align: center;
-}
-
-.row {
+.row, .interests-row, .traits-column {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  height: 400px; /* You can adjust this to match the desired spacing between buttons */
 }
 
-.trait-button {
-  /* Your button styling here */
-  display: block;
-  margin-bottom: 10px; 
-  margin: 5px;
-}
-
-.trait-button.selected {
-  /* Styling for the selected button */
-  background-color: blue; 
-}
-
-.traits-column {
-  display: flex;
-  flex-direction: column;
-  margin-right: 20px; 
-}
-
-.next-step-button {
-  background-color: green;
-  /* Other styles */
-}
-
-.go-back-button {
-  background-color: yellow;
-  /* Other styles */
-}
-
-.interests-container {
-  text-align: center;
-  margin: 20px;
-}
-
-.interests-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.interest-button {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-  width: 200px;
-}
-
-.interest-button.selected {
-  background-color: #a5d6a7; /* Selected color, you can change it */
-}
-
-.next-step-button {
-  background-color: #4caf50; /* Green color */
-  color: white;
-  padding: 10px;
-  margin: 10px;
-  cursor: pointer;
-  border: none;
-}
-
-.go-back-button {
-  background-color: #ffeb3b; /* Yellow color */
-  color: black;
-  padding: 10px;
-  margin: 10px;
-  cursor: pointer;
-  border: none;
-}
+/* Add any additional custom styles as needed */

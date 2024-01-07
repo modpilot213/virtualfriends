@@ -91,6 +91,23 @@
     background-color: gold;
   }
   
+/* Existing styles... */
+
+/* Styles for friend image and name */
+.friend-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%; /* Circular image */
+  object-fit: cover; /* Ensures the image covers the area without stretching */
+  margin-bottom: 10px;
+}
+
+.friend-name {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+/* Rest of your existing styles... */
 
 
 

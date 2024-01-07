@@ -1,0 +1,44 @@
+/* Container for the interests component */
+.interests2-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Title for the interests page */
+.interests2-container h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+/* List of interests */
+.interests2-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Individual interest item */
+.interest2-item {
+  margin: 5px;
+  padding: 5px 10px;
+  background-color: rgb(9, 84, 32);
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Checkbox customization */
+.interest2-item input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Style for selected interest */
+.interest2-item input[type="checkbox"]:checked + label {
+  background-color: #c0c0f0; /* Change to your preferred color */
+  color: white; /* Change text color for better contrast */
+  border-radius: 5px;
+  padding: 5px 10px;
+}

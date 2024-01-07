@@ -1,0 +1,62 @@
+/* Container for the entire component */
+.personality-traits-container {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #3498db; /* Light grey background */
+}
+
+/* Make the title bold and centered */
+h2 strong {
+  font-weight: bold;
+  text-align: center;
+  display: block; /* Ensure it's on a new line */
+  margin-bottom: 20px; /* Add some space below the title */
+}
+
+/* Style for individual trait buttons */
+.trait-button {
+  margin: 10px;
+  padding: 10px;
+  cursor: pointer;
+  background-color: #ddd;
+  border: 1px solid #ccc; /* Add a border for better contrast */
+  border-radius: 4px;
+  transition: background-color 0.3s; /* Smooth background color change */
+}
+
+/* Style for selected trait buttons */
+.trait-button.selected {
+  background-color: #4285f4; /* Google's blue color */
+  color: white; /* White text for better readability */
+}
+
+/* Style for the button rows */
+.row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Style for the navigation buttons at the bottom */
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.next-step-button,
+.go-back-button {
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #4285f4; /* Google's blue color */
+  color: white; /* White text for better readability */
+  border: none; /* Remove the default border */
+  border-radius: 4px; /* Rounded corners for the buttons */
+}
+
+.next-step-button:hover,
+.go-back-button:hover {
+  background-color: #357ae8; /* Slightly darker blue on hover */
+}

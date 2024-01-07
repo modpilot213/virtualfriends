@@ -8,7 +8,7 @@ function StartOptions() {
         <div className="app-container">
             <h1>Let's Get Started</h1>
             <Link to="/tutorial"><button>Tutorial</button></Link>
-            <Link to="/customize"><button>Get Started</button></Link>
+            <Link to="/onboard"><button>Get Started</button></Link>
             <Link to="/account"><button>Home</button></Link>
             <Link to="/"><button>Sign Out</button></Link>
 

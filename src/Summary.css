@@ -14,6 +14,21 @@
   align-items: flex-start;
 }
 
+/* Additional styles for image container */
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.friend-image {
+  max-width: 200px; /* Adjust size as needed */
+  border-radius: 10px; /* Optional, for rounded corners */
+  margin-bottom: 10px;
+}
+
+/* Rest of the styles */
 .summary-label,
 .summary-value {
   display: inline; /* This allows them to be on the same line */
@@ -47,4 +62,14 @@
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+}
+
+/* New addition for the checkbox */
+.summary-item input[type="checkbox"] {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.summary-item label {
+  vertical-align: middle;
 }

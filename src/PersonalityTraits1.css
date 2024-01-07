@@ -1,0 +1,39 @@
+.personality-traits-container {
+    background-color: #3498db;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .traits-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .trait-item {
+    display: block; /* Ensure the checkbox and label are on the same line */
+    margin-bottom: 10px;
+    cursor: pointer; /* Show pointer cursor when hovering over the label */
+  }
+  
+  .next-step-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .next-step-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Add more styles as needed */
+  

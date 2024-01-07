@@ -1,0 +1,27 @@
+.text-messaging-container {
+    text-align: center;
+    min-height: 100vh;
+  }
+  
+  .opt-in-section, .time-selection-section {
+    margin: 20px auto;
+    width: 80%;
+  }
+  
+  .opt-in-section label, .time-selection-section label {
+    margin-left: 10px;
+  }
+  
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .next-step-button, .go-back-button {
+    margin: 10px;
+  }
+  
+  /* Add more styles as needed */
+  

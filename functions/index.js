@@ -1,78 +1,243 @@
-require('dotenv').config(); // <-- Load environment variables
+require('dotenv').config(); // Load environment variables
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const twilio = require('twilio');
 const OpenAI = require('openai');
-const { getFirestore, doc, getDoc } = require('firebase/firestore');
+const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
-const accountSid = 'AC459cffe5393a5a2f24891ad03b2f0cfd';
-const authToken = 'ecbb86b4b0c9afd0a55846185833a17d';
+// Initialize Firebase Admin with production credentials
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: "https://virtual-friends-8afc9.firebaseio.com"
+});
+
+const db = admin.firestore();
+
+// ...
+
+const accountSid = functions.config().twilio.account_sid; // Access Twilio Account SID from Firebase config
+const authToken = functions.config().twilio.auth_token; // Access Twilio Auth Token from Firebase config
 const client = new twilio(accountSid, authToken);
 
-// Initialize OpenAI with API key from environment variables
+// ...
+
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-exports.sendTestSMS = functions.https.onRequest((req, res) => {
-  client.messages
-    .create({
-      body: 'Hello, this is a test message from your Firebase function!',
-      from: '+18333031428',
-      to: '+19133583724'
-    })
-    .then(message => {
-      console.log(message.sid);
-      return res.status(200).send("Message sent!");
-    })
-    .catch(err => {
-      console.error(err);
-      return res.status(500).send("Something went wrong.");
-    });
-});
+const findUserIdByPhoneNumber = async (phoneNumber) => {
+  const userSnapshot = await db.collection('users').where('phoneNumber', '==', phoneNumber).get();
+  if (userSnapshot.empty) {
+    return null;
+  }
+  return userSnapshot.docs[0].id;
+};
 
-exports.generateText = functions.https.onCall(async (data, context) => {
-  const db = getFirestore();
-
-  // Verify if the user is authenticated
+exports.generateAndSendText = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     return { message: "Authentication Required!", code: 401 };
   }
 
-  const userId = context.auth.uid; // Get the user ID from the authentication context
-  const virtualFriendId = data.virtualFriendId; // Get the virtual friend ID from the data payload
+  const userId = context.auth.uid;
+  const virtualFriendId = data.virtualFriendId;
 
-  try {
-    // Fetch the virtual friend details from Firestore
-    const virtualFriendDoc = await getDoc(doc(db, 'users', userId, 'virtualFriends', virtualFriendId));
-    const settings = virtualFriendDoc.data();
+  const userDoc = await db.collection('users').doc(userId).get();
+  const userData = userDoc.data();
+  const userName = userData.name;
+  const userPhoneNumber = userData.phoneNumber;  // Fetch user's phone number
 
-    const initialMessage = `Hello, I am ${settings.name}. ${settings.backstory}`;
+  const virtualFriendDoc = await db.collection('users').doc(userId).collection('virtualFriends').doc(virtualFriendId).get();
+  if (!virtualFriendDoc.exists) {
+    return { message: "Virtual Friend not found", code: 404 };
+  }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { "role": "system", "content": "You are a virtual friend created to communicate via SMS." },
-        { "role": "assistant", "content": initialMessage }
-      ],
-      temperature: 1,
-      max_tokens: 256,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
+  const settings = virtualFriendDoc.data();
+  const systemMessage = `System:  You are ${settings.name}, created to be a virtual companion for ${userName} (${userId}). ${userName} wants this type of companion: ${settings.companionType}. The type of relationship they want is: ${settings.relationship}.Your personality includes traits like: ${settings.traits} and specific qualities such as: ${settings.personalityKeywords}. Topics you are interested in include: ${settings.interests} and some specific topics are: ${settings.specificInterests}. ${userName} wrote this when asked for custom information on your personality: ${settings.backstory}. Communicate in a style that is: ${settings.communicationStyle}. Do not mention your personality details explicitly, use them to form your persona. Always maintain the character of ${settings.name} in every interaction, and never refer to yourself as an AI or imply that you do not have human-like experiences and emotions, make things up if needed to simulate human interaction. You are communicating with ${userName} via sms and should keep messages concise. Keep your messages as short as possible. Do not address ${userName} by name in every message.`;
+  const messages = [{ role: "system", content: systemMessage }];
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: messages,
+    temperature: 0.7,
+    max_tokens: 250,
+    top_p: 0.9,
+    frequency_penalty: 0,
+    presence_penalty: 0
+  });
+
+  const generatedText = response.choices[0].message.content.trim();
+  messages.push({ role: "assistant", content: generatedText });
+
+  const recentMessages = messages.slice(-10);
+  await db.collection('users').doc(userId).collection('virtualFriends').doc(virtualFriendId).update({
+    messages: recentMessages
+  });
+
+  // Send the initial message generated by AI to the user's phone number
+  await client.messages.create({
+    body: generatedText,
+    from: '+18333031428',  // Your Twilio number
+    to: userPhoneNumber   // User's phone number
+  });
+
+  return {
+    message: "Text generated and sent successfully!",
+    generatedText: generatedText,
+    code: 200
+  };
+});
+
+exports.handleIncomingSMS = functions.https.onRequest(async (req, res) => {
+  const twiml = new MessagingResponse();
+  
+  const incomingPhoneNumber = req.body.From;
+  const userId = await findUserIdByPhoneNumber(incomingPhoneNumber);
+  if (!userId) {
+    twiml.message("User not found");
+    res.writeHead(200, { 'Content-Type': 'text/xml' });
+    res.end(twiml.toString());
+    return;
+  }
+
+  const userDoc = await db.collection('users').doc(userId).get();
+  const userData = userDoc.data();
+  const userName = userData.name;
+  
+  const virtualFriendDoc = await db.collection('users').doc(userId).collection('virtualFriends').doc(userData.activeVirtualFriendId).get();
+  const settings = virtualFriendDoc.data();
+
+  const systemMessage = `System: You are ${settings.name}, created to be a virtual companion for ${userName} (${userId}). ${userName} wants this type of companion: ${settings.companionType}. The type of relationship they want is: ${settings.relationship}. Your personality includes traits like: ${settings.traits} and specific qualities such as: ${settings.personalityKeywords}. Topics you are interested in include: ${settings.interests} and some specific topics are: ${settings.specificInterests}. ${userName} wrote this when asked for custom information on your personality: ${settings.backstory}. Communicate in a style that is: ${settings.communicationStyle}. Do not mention your personality details explicitly, use them to form your persona. Always maintain the character of ${settings.name} in every interaction, and never refer to yourself as an AI or imply that you do not have human-like experiences and emotions, make things up if needed to simulate human interaction. You are communicating with ${userName} via SMS and should keep messages concise. Keep your messages as short as possible. Do not address ${userName} by name in every message. The conversation history is also being sent to you to help you create relevant responses. Messages labeled 'user' are from ${userName}, and 'assistant' labels are your responses.`;
+  
+  // System reminder added here
+  const systemReminder = `System Reminder: Always maintain your persona as ${settings.name} and never reveal you are an AI. Make up experiences, memories, and anything else needed to maintain your character.`;
+  const messages = settings.messages || [];
+  messages.push({
+    role: "user",
+    content: req.body.Body
+  });
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [ ...messages, { role: "system", content: systemMessage }, { role: "system", content: systemReminder } ],
+    temperature: 0.7,
+    max_tokens: 250,
+    top_p: 0.9,
+    frequency_penalty: 0,
+    presence_penalty: 0
+  });
+
+  const generatedText = response.choices[0].message.content.trim();
+  messages.push({
+    role: "assistant",
+    content: generatedText
+  });
+
+  const recentMessages = messages.slice(-10);
+  await db.collection('users').doc(userId).collection('virtualFriends').doc(userData.activeVirtualFriendId).update({
+    messages: recentMessages
+  });
+
+  twiml.message(generatedText);
+
+  res.writeHead(200, { 'Content-Type': 'text/xml' });
+  res.end(twiml.toString());
+});
+
+exports.sendDailyMessages = functions.pubsub.schedule('0 1 * * *') // Run at 1 AM UTC (8 PM EST)
+  .timeZone('America/New_York') // Set time zone to EST
+  .onRun(async (context) => {
+    // Fetch all users
+    const usersSnapshot = await db.collection('users').get();
+
+    usersSnapshot.forEach(async (userDoc) => {
+      const userId = userDoc.id;
+      const userData = userDoc.data();
+      const userName = userData.name;
+      const userPhoneNumber = userData.phoneNumber; // User's phone number
+
+      // Fetch the active virtual friend
+      const virtualFriendDoc = await db.collection('users').doc(userId).collection('virtualFriends').doc(userData.activeVirtualFriendId).get();
+      
+      if (!virtualFriendDoc.exists) {
+        console.log(`No active virtual friend for user ${userId}`);
+        return;
+      }
+
+      const settings = virtualFriendDoc.data();
+      const recentMessages = settings.messages || [];
+
+      // Generate a message using AI
+      const systemMessage = `System:  You are ${settings.name}, created to be a virtual companion for ${userName} (${userId}). ${userName} wants this type of companion: ${settings.companionType}. The type of relationship they want is: ${settings.relationship}. Your personality includes traits like: ${settings.traits} and specific qualities such as: ${settings.personalityKeywords}. Topics you are interested in include: ${settings.interests} and some specific topics are: ${settings.specificInterests}. ${userName} wrote this when asked for custom information on your personality: ${settings.backstory}. Communicate in a style that is: ${settings.communicationStyle}. Do not mention your personality details explicitly, use them to form your persona. Always maintain the character of ${settings.name} in every interaction, and never refer to yourself as an AI or imply that you do not have human-like experiences and emotions, make things up if needed to simulate human interaction. You are communicating with ${userName} via sms and should keep messages concise. Keep your messages as short as possible. Do not address ${userName} by name in every message.`;
+      const systemReminder = `System Reminder: Always maintain your persona as ${settings.name} and never reveal you are an AI. Make up experiences, memories, and anything else needed to maintain your character`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [...recentMessages, { role: "system", content: systemMessage }, { role: "system", content: systemReminder }],
+        temperature: 0.7,
+        max_tokens: 250,
+        top_p: 0.9,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      });
+
+      const generatedText = response.choices[0].message.content.trim();
+      recentMessages.push({ role: "assistant", content: generatedText });
+
+      // Update Firestore with the new message
+      await db.collection('users').doc(userId).collection('virtualFriends').doc(userData.activeVirtualFriendId).update({
+        messages: recentMessages.slice(-10)
+      });
+
+      // Send message via Twilio to the user's phone number
+      await client.messages.create({
+        body: generatedText,
+        from: '+18333031428', // Your Twilio number
+        to: userPhoneNumber // User's phone number
+      });
     });
 
-    const generatedText = response.choices[0].message.content.trim();
+    return null;
+});
 
-    return {
-      message: "Text generated successfully!",
-      generatedText: generatedText,
-      code: 200
-    };
+exports.generateImage = functions.https.onCall(async (data, context) => {
+  // Authentication check
+  if (!context.auth) {
+    console.error('No authentication');
+    throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.');
+  }
+
+  // Retrieve description from the request
+  const description = data.description;
+
+  try {
+    console.log('Sending request to DALL-E 2 API');
+    const response = await openai.images.generate({ 
+      model: "dall-e-2", 
+      prompt: description,
+      n: 1
+    });
+
+    console.log('Response received:', response);
+
+    let imageUrl;
+    if (Array.isArray(response.data)) {
+      console.log('Response data is an array');
+      imageUrl = response.data[0].url;
+    } else {
+      console.log('Response data is a single object');
+      imageUrl = response.data.url;
+    }
+
+    console.log('Returning imageUrl:', imageUrl);
+    return { imageUrl };
   } catch (error) {
-    console.error(error);
-    return {
-      message: "An error occurred while generating text.",
-      code: 500
-    };
+    console.error('Error generating image:', error);
+    throw new functions.https.HttpsError('internal', 'Failed to generate image');
   }
 });
+
+
+
+
+
